@@ -56,10 +56,12 @@ hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"), { description = "Nex
 hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"), { description = "Previous track" })
 
 -- ======= Screen Brightness =======
+-- Increase brightness 5%
+hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl set +5% && brightnessctl get | awk '{print int($1*100/65535)}' | tee /tmp/$HYPRLAND_INSTANCE_SIGNATURE.wob"), { repeating = true })
 
-hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl s +5%"), { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl s 5%-"), { locked = true, repeating = true })
-hl.bind(mainMod .. " + SHIFT + P", hl.dsp.exec_cmd("gnome-calculator"), { description = "Runs the calculator application" })
+-- Decrease brightness 5%
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl set 5%- && brightnessctl get | awk '{print int($1*100/65535)}' | tee /tmp/$HYPRLAND_INSTANCE_SIGNATURE.wob"), { repeating = true })
+
 --bindd = $mainMod, L, Lock the screen, exec, swaylock-fancy -e -K -p 10 -f Hack-Regular
 hl.bind(mainMod .. " + O", hl.dsp.exec_cmd("killall -SIGUSR2 waybar"), { description = "Reload/restarts Waybar" })
 
