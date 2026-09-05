@@ -30,9 +30,24 @@ hl.bind(mainMod .. " + G", hl.dsp.exec_cmd("hyprctl --batch \"keyword general:ga
 
 -- ======= Volume Control =======
 
-hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("pactl set-sink-volume @DEFAULT_SINK@ +5%"), { locked = true, repeating = true })
-hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("pactl set-sink-volume @DEFAULT_SINK@ -5%"), { locked = true, repeating = true })
-hl.bind("XF86AudioMute", hl.dsp.exec_cmd("amixer sset Master toggle | sed -En '/\\[on\\]/ s/.*\\[([0-9]+)%\\].*/\\1/ p; /\\[off\\]/ s/.*/0/p' | head -1 > /tmp/$HYPRLAND_INSTANCE_SIGNATURE.wob"), { locked = true, repeating = true })
+-- Volume UP (Held or pressed, capped at 100%, outputs to WOB)
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd([[
+    wpctl set-volume @DEFAULT_AUDIO_SINK@ 2.5%+
+    pactl get-sink-volume @DEFAULT_SINK@ | grep -oP '\d+(?=%)' | awk '{if($1>100) system("pactl set-sink-volume @DEFAULT_SINK@ 100%")}'
+    pactl get-sink-volume @DEFAULT_SINK@ | grep -oP '\d+(?=%)' | awk '{print $1}' | head -1 > /tmp/$HYPRLAND_INSTANCE_SIGNATURE.wob
+]]), { repeating = true })
+
+-- Volume DOWN (Held or pressed, outputs to WOB)
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd([[
+    wpctl set-volume @DEFAULT_AUDIO_SINK@ 2.5%-
+    pactl get-sink-volume @DEFAULT_SINK@ | grep -oP '\d+(?=%)' | awk '{print $1}' | head -1 > /tmp/$HYPRLAND_INSTANCE_SIGNATURE.wob
+]]), { repeating = true })
+
+-- Volume MUTE (Single press only, outputs to WOB)
+hl.bind("XF86AudioMute", hl.dsp.exec_cmd([[
+    wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+    pactl get-sink-volume @DEFAULT_SINK@ | grep -oP '\d+(?=%)' | awk '{print $1}' | head -1 > /tmp/$HYPRLAND_INSTANCE_SIGNATURE.wob
+]]))
 
 -- ======= Playback Control =======
 
