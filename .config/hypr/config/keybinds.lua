@@ -21,6 +21,7 @@ hl.bind(mainMod .. " + Y", hl.dsp.window.pin(), { description = "Pin current win
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"), { description = "Toggles current window split mode" })
 -- ======= Grouping Windows =======
 hl.bind(mainMod .. " + K", hl.dsp.group.toggle(), { description = "Toggles current window group mode (ungroup all related)" })
+hl.bind(mainMod .. " + SHIFT + K", hl.dsp.window.move({ out_of_group = true }), { description = "Move active window out of group" })
 hl.bind(mainMod .. " + Tab", hl.dsp.group.next(), { description = "Switches to the next window in the group" })
 
 -- ======= Toggle Gaps =======
@@ -30,24 +31,9 @@ hl.bind(mainMod .. " + G", hl.dsp.exec_cmd("hyprctl --batch \"keyword general:ga
 
 -- ======= Volume Control =======
 
--- Volume UP (Held or pressed, capped at 100%, outputs to WOB)
-hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd([[
-    wpctl set-volume @DEFAULT_AUDIO_SINK@ 2.5%+
-    pactl get-sink-volume @DEFAULT_SINK@ | grep -oP '\d+(?=%)' | awk '{if($1>100) system("pactl set-sink-volume @DEFAULT_SINK@ 100%")}'
-    pactl get-sink-volume @DEFAULT_SINK@ | grep -oP '\d+(?=%)' | awk '{print $1}' | head -1 > /tmp/$HYPRLAND_INSTANCE_SIGNATURE.wob
-]]), { repeating = true })
-
--- Volume DOWN (Held or pressed, outputs to WOB)
-hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd([[
-    wpctl set-volume @DEFAULT_AUDIO_SINK@ 2.5%-
-    pactl get-sink-volume @DEFAULT_SINK@ | grep -oP '\d+(?=%)' | awk '{print $1}' | head -1 > /tmp/$HYPRLAND_INSTANCE_SIGNATURE.wob
-]]), { repeating = true })
-
--- Volume MUTE (Single press only, outputs to WOB)
-hl.bind("XF86AudioMute", hl.dsp.exec_cmd([[
-    wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
-    pactl get-sink-volume @DEFAULT_SINK@ | grep -oP '\d+(?=%)' | awk '{print $1}' | head -1 > /tmp/$HYPRLAND_INSTANCE_SIGNATURE.wob
-]]))
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("pactl set-sink-volume @DEFAULT_SINK@ +5%"), { locked = true, repeating = true })
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("pactl set-sink-volume @DEFAULT_SINK@ -5%"), { locked = true, repeating = true })
+hl.bind("XF86AudioMute", hl.dsp.exec_cmd("amixer sset Master toggle | sed -En '/\\[on\\]/ s/.*\\[([0-9]+)%\\].*/\\1/ p; /\\[off\\]/ s/.*/0/p' | head -1 > /tmp/$HYPRLAND_INSTANCE_SIGNATURE.wob"), { locked = true, repeating = true })
 
 -- ======= Playback Control =======
 
@@ -56,12 +42,10 @@ hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"), { description = "Nex
 hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"), { description = "Previous track" })
 
 -- ======= Screen Brightness =======
--- Increase brightness 5%
-hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl set +5% && brightnessctl get | awk '{print int($1*100/65535)}' | tee /tmp/$HYPRLAND_INSTANCE_SIGNATURE.wob"), { repeating = true })
 
--- Decrease brightness 5%
-hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl set 5%- && brightnessctl get | awk '{print int($1*100/65535)}' | tee /tmp/$HYPRLAND_INSTANCE_SIGNATURE.wob"), { repeating = true })
-
+hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl s +5%"), { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl s 5%-"), { locked = true, repeating = true })
+hl.bind(mainMod .. " + SHIFT + P", hl.dsp.exec_cmd("gnome-calculator"), { description = "Runs the calculator application" })
 --bindd = $mainMod, L, Lock the screen, exec, swaylock-fancy -e -K -p 10 -f Hack-Regular
 hl.bind(mainMod .. " + O", hl.dsp.exec_cmd("killall -SIGUSR2 waybar"), { description = "Reload/restarts Waybar" })
 
@@ -152,14 +136,13 @@ hl.bind(mainMod .. " + 0", hl.dsp.focus({ workspace = 10 }), { description = "Sw
 hl.bind(mainMod .. " + PERIOD", hl.dsp.focus({ workspace = "e+1" }), { description = "Scroll through workspaces incrementally" })
 hl.bind(mainMod .. " + COMMA", hl.dsp.focus({ workspace = "e-1" }), { description = "Scroll through workspaces decrementally" })
 -- With $mainMod + scroll
-hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }), { description = "Scroll through workspaces incrementally" })
-hl.bind(mainMod .. " + mouse_up", hl.dsp.focus({ workspace = "e-1" }), { description = "Scroll through workspaces decrementally" })
+hl.bind(mainMod .. " + mouse_down", hl.dsp.workspace.toggle_special("special"), { description = "Toggles the Special workspace" })
+hl.bind(mainMod .. " + mouse_up", hl.dsp.workspace.toggle_special("special"), { description = "Toggles the Special workspace" })
 hl.bind(mainMod .. " + slash", hl.dsp.focus({ workspace = "previous" }), { description = "Switch to the previous workspace" })
 -- Special workspaces (scratchpads)
 hl.bind(mainMod .. " + minus", hl.dsp.window.move({ workspace = "special" }), { description = "Move active window to Special workspace" })
 hl.bind(mainMod .. " + equal", hl.dsp.workspace.toggle_special("special"), { description = "Toggles the Special workspace" })
-hl.bind(mainMod .. " + F1", hl.dsp.workspace.toggle_special("scratchpad"), { description = "Call special workspace scratchpad" })
-hl.bind(mainMod .. " + ALT + SHIFT + F1", hl.dsp.window.move({ workspace = "special:scratchpad", follow = false }), { description = "Move active window to special workspace scratchpad" })
+hl.bind(mainMod .. " + D", hl.dsp.exec_cmd("kitty --class scratchpad-term", { workspace = "special silent" }))
 
 -- ======= Additional Settings =======
 
