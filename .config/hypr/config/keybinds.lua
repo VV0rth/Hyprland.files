@@ -23,6 +23,7 @@ hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"), { description = "Toggle
 
 -- ======= Grouping Windows =======
 hl.bind(mainMod .. " + K", hl.dsp.group.toggle(), { description = "Toggles current window group mode (ungroup all related)" })
+hl.bind(mainMod .. " + SHIFT + K", hl.dsp.window.move({ out_of_group = true }), { description = "Move active window out of group" })
 hl.bind(mainMod .. " + Tab", hl.dsp.group.next(), { description = "Switches to the next window in the group" })
 
 -- ======= Toggle Gaps =======
