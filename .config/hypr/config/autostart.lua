@@ -31,5 +31,6 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("hash dbus-update-activation-environment 2>/dev/null &")
     hl.exec_cmd("dbus-update-activation-environment --systemd &")
     hl.exec_cmd("$idlehandler")
+    hl.exec_cmd("googlemessages &")
 end)
 
