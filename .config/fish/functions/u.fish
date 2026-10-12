@@ -1,4 +1,4 @@
-function un --description 'Update system packages and Flatpaks'
+function u --description 'Update system packages and Flatpaks'
     set -l title (set_color --bold brcyan)
     set -l ok (set_color --bold brgreen)
     set -l warn (set_color --bold bryellow)
