@@ -6,7 +6,7 @@
 
 filemanager = "nautilus"
 webbrowser = "zen-browser"
-applauncher = "rofi -show combi -modi run,window,combi,drun -combi-modi drun,run,window"
+applauncher = "qs -c noctalia-shell ipc call launcher toggle"
 terminal = "kitty"
 idlehandler = "swayidle -w timeout 300 'swaylock -f -c 000000' before-sleep 'swaylock -f -c 000000'"
 capturing = "grim -g \"$(slurp)\" - | swappy -f -"

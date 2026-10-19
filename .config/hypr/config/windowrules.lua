@@ -210,14 +210,6 @@ hl.window_rule({
     rounding = 4,
 })
 
--- Google Messages on special workspace
-hl.window_rule({
-    match = {
-        class = "googlemessages",
-    },
-    workspace = "special silent",
-})
-
 --Try transparency on most windows
 -- Windows Rules End #
 
