@@ -32,7 +32,3 @@ require("config.windowrules")
 --# ~/.config/hypr/config/user-config.conf
 -- source = ~/.config/hypr/config/user-config.conf
 -- Source: ./dms/binds.conf — convert this file to Lua and ensure it is on Lua's package.path.
-require("dms.binds")
-
--- Source: ./dms/cursor.conf — convert this file to Lua and ensure it is on Lua's package.path.
-require("dms.cursor")
