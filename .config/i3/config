@@ -1,0 +1,128 @@
+# Adapted from ~/.config/hypr/config/*.lua. Super is the main modifier.
+set $mod Mod4
+set $helper ~/.config/wm-common/action
+set $nav ~/.config/wm-common/nav.py
+font pango:monospace 10
+default_border pixel 2
+default_floating_border pixel 2
+gaps inner 3
+gaps outer 5
+client.focused #82dccc #182545 #ffffff #00aa84 #82dccc
+client.focused_inactive #798bb2 #111826 #dddddd #798bb2 #798bb2
+client.unfocused #798bb2 #111826 #dddddd #798bb2 #798bb2
+client.urgent #ff5555 #111826 #ffffff #ff5555 #ff5555
+floating_modifier $mod
+focus_follows_mouse yes
+workspace_auto_back_and_forth no
+bindsym $mod+q kill
+bindsym $mod+Escape exec $helper pick-kill
+bindsym $mod+Mod1+space floating toggle
+bindsym $mod+d exec $nav maximize
+bindsym $mod+f fullscreen toggle
+bindsym $mod+j layout toggle split
+bindsym $mod+k layout toggle tabbed split
+bindsym $mod+Tab focus next
+bindsym Mod1+Tab focus next
+bindsym $mod+Up focus up
+bindsym $mod+Down focus down
+bindsym $mod+Left exec $nav move-relative -1 follow
+bindsym $mod+Right exec $nav move-relative 1 follow
+bindsym $mod+Control+Left exec $nav relative -1
+bindsym $mod+Control+Right exec $nav relative 1
+bindsym $mod+Control+Down exec $nav empty
+bindsym $mod+Control+Shift+Left exec $nav move-relative -1 follow
+bindsym $mod+Control+Shift+Right exec $nav move-relative 1 follow
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Right move right
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+s move scratchpad
+bindsym $mod+s scratchpad show
+bindsym $mod+Return exec kitty
+bindsym $mod+e exec nautilus
+bindsym $mod+t exec gnome-text-editor --new-window
+bindsym $mod+c exec gnome-calculator
+bindsym XF86Calculator exec gnome-calculator
+bindsym $mod+w exec zen-browser
+bindsym Control+Shift+Escape exec kitty -e btop
+bindsym $mod+Shift+c reload
+bindsym $mod+r mode "resize"
+mode "resize" {
+    bindsym Left resize shrink width 20 px
+    bindsym Right resize grow width 20 px
+    bindsym Up resize shrink height 20 px
+    bindsym Down resize grow height 20 px
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindcode $mod+10 exec $nav output 1
+bindcode $mod+Shift+10 exec $nav move-output 1
+bindcode $mod+Mod1+10 exec $nav absolute 1
+bindcode $mod+Control+10 exec $nav local 1
+bindcode $mod+Control+Shift+10 exec $nav move-local 1 follow
+bindcode $mod+Mod1+Shift+10 exec $nav move-local 1
+bindcode $mod+11 exec $nav output 2
+bindcode $mod+Shift+11 exec $nav move-output 2
+bindcode $mod+Mod1+11 exec $nav absolute 2
+bindcode $mod+Control+11 exec $nav local 2
+bindcode $mod+Control+Shift+11 exec $nav move-local 2 follow
+bindcode $mod+Mod1+Shift+11 exec $nav move-local 2
+bindcode $mod+12 exec $nav output 3
+bindcode $mod+Shift+12 exec $nav move-output 3
+bindcode $mod+Mod1+12 exec $nav absolute 3
+bindcode $mod+Control+12 exec $nav local 3
+bindcode $mod+Control+Shift+12 exec $nav move-local 3 follow
+bindcode $mod+Mod1+Shift+12 exec $nav move-local 3
+bindsym --whole-window $mod+button4 exec $nav relative -1
+bindsym --whole-window $mod+button5 exec $nav relative 1
+bindsym --whole-window $mod+Control+button4 exec $nav relative -1
+bindsym --whole-window $mod+Control+button5 exec $nav relative 1
+bindsym --whole-window $mod+Shift+button4 exec $nav move-output-relative 1
+bindsym --whole-window $mod+Shift+button5 exec $nav move-output-relative -1
+bindsym --whole-window $mod+Control+Shift+button4 exec $nav move-relative -1 follow
+bindsym --whole-window $mod+Control+Shift+button5 exec $nav move-relative 1 follow
+
+# Utility, dialog, PiP and game rules (X11 class and Wayland app_id variants).
+for_window [title="(?i)^picture[- ]?in[- ]?picture"] floating enable, resize set 860 360, sticky enable
+for_window [title="^(Open|Open File|Authentication Required|Add Folder to Workspace|Choose Files|Save As|Confirm to replace files|File Operation Progress)$"] floating enable
+for_window [title="^(Winetricks|Protontricks|File Upload|Choose wallpaper|Library)"] floating enable
+for_window [class="(?i)(calc|launcher|dialog|kvantummanager|qt[56]ct|nwg-look|pavucontrol|blueman-manager|nm-applet|nm-connection-editor|xdg-desktop-portal-gtk)"] floating enable
+for_window [class="(?i)calc"] resize set 585 620
+for_window [class="^steam$" title="^(Friends List|Launching.*)$"] floating enable
+assign [class="^(steam_app.*|gamescope)$"] workspace gaming
+for_window [class="^(steam_app.*|gamescope)$" title=".+"] fullscreen enable
+for_window [class="^steam_app.*$" title="^$"] floating enable, fullscreen disable, move position center
+bindsym $mod+z exec $helper settings-toggle
+bindsym $mod+x exec $helper panel-toggle control-center
+bindsym $mod+space exec $helper panel-toggle launcher
+bindsym $mod+period exec $helper panel-toggle launcher /emo
+bindsym $mod+l exec $helper session lock
+bindsym $mod+Mod1+c exec $helper panel-toggle session
+bindsym $mod+p exec $helper picker
+bindsym $mod+Print exec $helper screenshot-fullscreen
+bindsym $mod+Shift+w exec $helper panel-toggle wallpaper
+bindsym $mod+v exec $helper panel-toggle clipboard
+bindsym $mod+a exec $helper panel-toggle control-center notifications
+bindsym Print exec $helper screenshot-region
+bindsym XF86AudioRaiseVolume exec $helper volume-up
+bindsym XF86AudioLowerVolume exec $helper volume-down
+bindsym XF86AudioMute exec $helper volume-mute
+bindsym XF86AudioMicMute exec $helper mic-mute
+bindsym XF86AudioPlay exec $helper media toggle
+bindsym XF86AudioPause exec $helper media toggle
+bindsym XF86AudioNext exec $helper media next
+bindsym XF86AudioPrev exec $helper media previous
+bindsym XF86MonBrightnessUp exec $helper brightness-up
+bindsym XF86MonBrightnessDown exec $helper brightness-down
+
+exec --no-startup-id ~/.config/wm-common/start-i3
+bar {
+    position top
+    status_command ~/.config/wm-common/status
+    colors {
+        background #111826
+        statusline #dddddd
+        focused_workspace #82dccc #007d6f #ffffff
+        inactive_workspace #111826 #111826 #798bb2
+    }
+}

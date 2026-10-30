@@ -101,7 +101,7 @@ bindsym $mod+Mod1+c exec $helper panel-toggle session
 bindsym $mod+p exec $helper picker
 bindsym $mod+Print exec $helper screenshot-fullscreen
 bindsym $mod+Shift+w exec $helper panel-toggle wallpaper
-bindsym $mod+v exec $helper panel-toggle clipboard
+bindsym $mod+v floating toggle
 bindsym $mod+a exec $helper panel-toggle control-center notifications
 bindsym Print exec $helper screenshot-region
 bindsym --locked XF86AudioRaiseVolume exec $helper volume-up
@@ -132,3 +132,6 @@ for_window [app_id="^steam$" title="^(Friends List|Launching.*)$"] floating enab
 assign [app_id="^(steam_app.*|gamescope)$"] workspace gaming
 for_window [app_id="^(steam_app.*|gamescope)$" title=".+"] fullscreen enable
 for_window [app_id="^steam_app.*$" title="^$"] floating enable, fullscreen disable, move position center
+
+# Visual parity with Hyprland; requires SwayFX.
+include ~/.config/sway/effects.conf
