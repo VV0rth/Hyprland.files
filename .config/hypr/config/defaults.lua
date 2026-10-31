@@ -6,7 +6,7 @@
 
 filemanager = "nautilus"
 webbrowser = "zen-browser"
-applauncher = "qs -c noctalia-shell ipc call launcher toggle"
+applauncher = "noctalia msg panel-toggle launcher"
 terminal = "kitty"
 idlehandler = "swayidle -w timeout 300 'swaylock -f -c 000000' before-sleep 'swaylock -f -c 000000'"
 capturing = "grim -g \"$(slurp)\" - | swappy -f -"

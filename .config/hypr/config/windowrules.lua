@@ -242,6 +242,15 @@ hl.workspace_rule({
     gaps_in = 3,
 })
 
+-- Special workspaces replace the deprecated layout-specific
+-- `special_scale_factor`.  The outer gap keeps their tiled contents inset
+-- from the active monitor, while retaining the usual internal gap.
+hl.workspace_rule({
+    workspace = "s[true]",
+    gaps_out = 40,
+    gaps_in = 3,
+})
+
 -- Workspaces Rules End #
 
 -- Layers Rules #
@@ -290,10 +299,4 @@ hl.layer_rule({
     ignore_alpha = 0.5,
 })
 
-hl.config({
-    dwindle = {
-        special_scale_factor = .9,
-    },
-    -- Layers Rules End #
-})
-
+-- Layers Rules End #

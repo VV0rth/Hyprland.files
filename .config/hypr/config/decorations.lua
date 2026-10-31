@@ -11,13 +11,30 @@ require("config.colors")
 
 hl.config({
     decoration = {
+
         active_opacity = 1,
+        inactive_opacity = 1,
         rounding = 15,
         -- https://wiki.hyprland.org/0.45.0/Configuring/Variables/#blur
         blur = {
             size = 15,
             passes = 2, -- more passes = more resource intensive.
-            xray = false,
+
+            
+            acrylic = {
+                refraction = 24.0,
+                clarity = 0.82,
+                aberration = 0.025,
+                bulb = 48.0,
+            },
+        },
+        wobble = {
+            enabled = true,
+            mesh = 12,
+            stiffness = 200.0,
+            damping = 12.0,
+            mass = 1.0,
+            intensity = 0.2,
         },
         -- https://wiki.hyprland.org/0.45.0/Configuring/Variables/#shadow
         shadow = {
