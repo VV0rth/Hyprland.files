@@ -105,12 +105,6 @@ bindsym --whole-window $mod+Control+Shift+button5 exec "$nav move-relative 1 fol
 for_window [title="(?i)^picture[- ]?in[- ]?picture"] floating enable; resize set 860 360; sticky enable
 for_window [title="^(Open|Open File|Authentication Required|Add Folder to Workspace|Choose Files|Save As|Confirm to replace files|File Operation Progress)$"] floating enable
 for_window [title="^(Winetricks|Protontricks|File Upload|Choose wallpaper|Library)$"] floating enable
-for_window [class="(?i)(calc|launcher|dialog|kvantummanager|qt[56]ct|nwg-look|pavucontrol|blueman-manager|nm-applet|nm-connection-editor|xdg-desktop-portal-gtk)"] floating enable
-for_window [class="(?i)calc"] resize set 585 620
-for_window [class="^steam$" title="^(Friends List|Launching.*)$"] floating enable
-assign [class="^(steam_app.*|gamescope)$"] workspace gaming
-for_window [class="^(steam_app.*|gamescope)$" title=".+" ] fullscreen enable
-for_window [class="^steam_app.*$" title="^$"] floating enable; fullscreen disable; move position center
 
 # Utility panel and session bindings
 bindsym $mod+z exec "$helper settings-toggle"
