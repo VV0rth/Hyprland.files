@@ -1,0 +1,132 @@
+#VV0rth Kali stock Sway, adapted from Hyprland.files Debian branch
+set $mod Mod4
+font pango:monospace 10
+output * bg #111826 solid_color
+input type:touchpad natural_scroll enabled
+focus_follows_mouse yes
+floating_modifier $mod normal
+default_border pixel 3
+default_floating_border pixel 2
+gaps inner 3
+gaps outer 5
+client.focused #01ccff #182545 #ffffff #01ccff #01ccff
+client.focused_inactive #798bb2 #111826 #dddddd #798bb2 #798bb2
+client.unfocused #798bb2 #111826 #dddddd #798bb2 #798bb2
+client.urgent #ff5555 #111826 #ffffff #ff5555 #ff5555
+
+bindsym $mod+Return exec kitty
+bindsym $mod+e exec nautilus --new-window
+bindsym $mod+Shift+e exec nautilus admin:///
+bindsym $mod+w exec firefox
+bindsym $mod+space exec rofi -show drun
+bindsym $mod+q kill
+bindsym $mod+v floating toggle
+bindsym $mod+f fullscreen toggle
+bindsym $mod+y sticky toggle
+bindsym $mod+j layout toggle split
+bindsym $mod+k layout toggle tabbed split
+bindsym $mod+Tab focus next
+bindsym $mod+Shift+p exec gnome-calculator
+bindsym $mod+l exec swaylock -f -c 111826
+bindsym $mod+o exec pkill -SIGUSR2 waybar
+bindsym $mod+a exec grim -g "$(slurp)" - | swappy -f -
+
+bindsym $mod+Left focus left
+bindsym $mod+Right focus right
+bindsym $mod+Up focus up
+bindsym $mod+Down focus down
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Right move right
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Down move down
+bindsym $mod+Control+Shift+Left resize shrink width 15 px
+bindsym $mod+Control+Shift+Right resize grow width 15 px
+bindsym $mod+Control+Shift+Up resize shrink height 15 px
+bindsym $mod+Control+Shift+Down resize grow height 15 px
+bindsym $mod+g gaps inner all set 0; gaps outer all set 0
+bindsym $mod+Shift+g gaps inner all set 3; gaps outer all set 5
+
+bindsym $mod+r mode "resize"
+mode "resize" {
+    bindsym Left resize shrink width 15 px
+    bindsym Right resize grow width 15 px
+    bindsym Up resize shrink height 15 px
+    bindsym Down resize grow height 15 px
+    bindsym h resize shrink width 15 px
+    bindsym l resize grow width 15 px
+    bindsym k resize shrink height 15 px
+    bindsym j resize grow height 15 px
+    bindsym Escape mode "default"
+    bindsym Return mode "default"
+}
+bindsym $mod+1 workspace number 1
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Control+1 move container to workspace number 1; workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Control+2 move container to workspace number 2; workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Control+3 move container to workspace number 3; workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Control+4 move container to workspace number 4; workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Control+5 move container to workspace number 5; workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Control+6 move container to workspace number 6; workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Control+7 move container to workspace number 7; workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Control+8 move container to workspace number 8; workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+Shift+9 move container to workspace number 9
+bindsym $mod+Control+9 move container to workspace number 9; workspace number 9
+bindsym $mod+0 workspace number 10
+bindsym $mod+Shift+0 move container to workspace number 10
+bindsym $mod+Control+0 move container to workspace number 10; workspace number 10
+bindsym $mod+period workspace next
+bindsym $mod+comma workspace prev
+bindsym $mod+slash workspace back_and_forth
+bindsym $mod+Control+Left move container to workspace prev; workspace prev
+bindsym $mod+Control+Right move container to workspace next; workspace next
+bindsym --whole-window $mod+button4 workspace prev
+bindsym --whole-window $mod+button5 workspace next
+bindsym $mod+minus move scratchpad
+bindsym $mod+Shift+equal scratchpad show
+bindsym $mod+equal scratchpad show
+bindsym $mod+F1 scratchpad show
+bindsym $mod+Mod1+Shift+F1 move scratchpad
+for_window [title="(?i)^Picture-in-Picture$"] floating enable, sticky enable, resize set 960 540, move position center
+for_window [title="^(Open|Open File|Authentication Required|Save As|Choose Files)$"] floating enable
+for_window [app_id="pavucontrol"] floating enable
+bindsym --locked XF86AudioRaiseVolume exec wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 2.5%+
+bindsym --locked XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 2.5%-
+bindsym --locked XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+bindsym --locked XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+bindsym --locked XF86AudioPlay exec playerctl play-pause
+bindsym --locked XF86AudioNext exec playerctl next
+bindsym --locked XF86AudioPrev exec playerctl previous
+bindsym --locked XF86AudioStop exec playerctl stop
+bindsym --locked XF86MonBrightnessUp exec brightnessctl set +5%
+bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
+exec kitty
+exec waybar -c ~/.config/waybar/config -s ~/.config/waybar/style.css
+exec swaync
+exec nm-applet --indicator
+bar {
+    position top
+    status_command while date '+%a %b %d %H:%M'; do sleep 30; done
+    colors {
+        background #111826
+        statusline #dddddd
+        focused_workspace #01ccff #182545 #ffffff
+        inactive_workspace #111826 #111826 #798bb2
+    }
+}
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+m exit
