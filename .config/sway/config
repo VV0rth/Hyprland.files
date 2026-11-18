@@ -1,180 +1,172 @@
-
-# ============================================================
-# VV0RTH / SWAY
-# Kali Linux - Workstation / VM Profile
-# ============================================================
-
-### Variables
 set $mod Mod4
-set $term foot
-set $menu fuzzel
-set $left h
-set $down j
-set $up k
-set $right l
+set $term kitty
+set $menu rofi -show drun
+set $lock ~/.config/sway/session lock
+set $bar ~/.config/polybar/launch
 
-### Environment
-set $XCURSOR_SIZE 24
+font pango:Fira Sans, DejaVu Sans 10
+output * scale 1.333
+output * bg "/home/kali/Pictures/Wallpapers/orange-kali-2025-3-3840x2160.png" fill #111826
+# The old dual-ultrawide profile is not sourced by Hyprland. Enable this if you use it.
+# include monitors.conf
 
-### Output
-output * bg #16161e solid_color
-
-### Input
-input type:keyboard {
-    xkb_layout us
-    repeat_delay 300
-    repeat_rate 40
-}
-
-input type:touchpad {
-    tap enabled
-    natural_scroll enabled
-    dwt enabled
-}
-
-### Appearance
-font pango:JetBrains Mono 10
-
-default_border pixel 2
-default_floating_border pixel 2
-
-gaps inner 8
-gaps outer 4
-smart_gaps on
-
-# Dracula-inspired colors
-set $bg       #282a36
-set $surface  #44475a
-set $fg       #f8f8f2
-set $purple   #bd93f9
-set $pink     #ff79c6
-set $cyan     #8be9fd
-
-client.focused          $purple $bg $fg $purple $purple
-client.focused_inactive $surface $bg $fg $surface $surface
-client.unfocused        $surface $bg $fg $surface $surface
-client.urgent           $pink $bg $fg $pink $pink
-client.placeholder      $bg $bg $fg $bg $bg
-
-### Window Behavior
-focus_follows_mouse no
-mouse_warping none
-floating_modifier $mod normal
+xwayland force
+focus_follows_mouse yes
+focus_on_window_activation focus
 workspace_auto_back_and_forth yes
+floating_modifier $mod normal
+default_border pixel 3
+default_floating_border pixel 2
+gaps inner 3
+gaps outer 5
+# Reserve room for Polybar even when switching to the no-gaps preset.
+gaps top 38
+client.focused          #82dccc #007d6f #ffffff #00aa84 #82dccc
+client.focused_inactive #007d6f #111826 #dddddd #007d6f #007d6f
+client.unfocused        #007d6f #111826 #798bb2 #007d6f #007d6f
+client.urgent           #ffb4ab #690005 #ffffff #ffb4ab #ffb4ab
 
-# Common floating dialogs
-for_window [window_role="pop-up"] floating enable
-for_window [window_role="dialog"] floating enable
+seat seat0 xcursor_theme default 24
+input type:keyboard xkb_numlock enabled
+input type:touchpad natural_scroll enabled
 
-### Applications
+exec ~/.config/sway/session start
+exec $bar
+
 bindsym $mod+Return exec $term
-bindsym $mod+d exec $menu
-bindsym $mod+Shift+q kill
+bindsym $mod+w exec flatpak run app.zen_browser.zen
+bindsym $mod+e exec nautilus -w
+bindsym $mod+Shift+e exec nautilus admin:/// -w
+bindsym $mod+a exec ~/.config/sway/session screenshot
+bindsym $mod+Space exec $menu
+bindsym $mod+Shift+p exec gnome-calculator
+bindsym $mod+l exec $lock
+bindsym $mod+o exec $bar
+bindsym $mod+Shift+m exit
+bindsym $mod+q kill
+bindsym $mod+v floating toggle
+bindsym $mod+f fullscreen toggle
+bindsym $mod+y sticky toggle
+bindsym $mod+j split toggle
 
-### Focus
-bindsym $mod+$left focus left
-bindsym $mod+$down focus down
-bindsym $mod+$up focus up
-bindsym $mod+$right focus right
+# Tabbed layout is Sway's closest equivalent to a Hyprland group.
+bindsym $mod+k layout toggle tabbed split
+bindsym $mod+Shift+k move up
+bindsym $mod+Tab focus next sibling
 
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
-bindsym $mod+Right focus right
+bindsym $mod+g gaps inner all set 0, gaps outer all set 0, gaps top all set 38
+bindsym $mod+Shift+g gaps inner all set 3, gaps outer all set 5, gaps top all set 38
 
-### Move Windows
-bindsym $mod+Shift+$left move left
-bindsym $mod+Shift+$down move down
-bindsym $mod+Shift+$up move up
-bindsym $mod+Shift+$right move right
+bindsym --locked XF86AudioRaiseVolume exec wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 2.5%+
+bindsym --locked XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 2.5%-
+bindsym --locked --no-repeat XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+bindsym --locked --no-repeat XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+bindsym --locked --no-repeat XF86AudioPlay exec playerctl play-pause
+bindsym --locked --no-repeat XF86AudioNext exec playerctl next
+bindsym --locked --no-repeat XF86AudioPrev exec playerctl previous
+bindsym --locked --no-repeat XF86AudioStop exec playerctl stop
+bindsym --locked XF86MonBrightnessUp exec brightnessctl set +5%
+bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
+bindswitch lid:toggle exec $lock
 
-### Workspaces
-set $ws1 "1"
-set $ws2 "2"
-set $ws3 "3"
-set $ws4 "4"
-set $ws5 "5"
-set $ws6 "6"
-set $ws7 "7"
-set $ws8 "8"
-set $ws9 "9"
-set $ws10 "10"
+bindsym $mod+left focus left
+bindsym $mod+Shift+left move left
+bindsym $mod+right focus right
+bindsym $mod+Shift+right move right
+bindsym $mod+up focus up
+bindsym $mod+Shift+up move up
+bindsym $mod+down focus down
+bindsym $mod+Shift+down move down
+
+set $grow_width resize grow width 15 px or 3 ppt
+set $shrink_width resize shrink width 15 px or 3 ppt
+set $grow_height resize grow height 15 px or 3 ppt
+set $shrink_height resize shrink height 15 px or 3 ppt
+bindsym $mod+r mode "resize"
+mode "resize" {
+    bindsym Right $grow_width
+    bindsym l $grow_width
+    bindsym Left $shrink_width
+    bindsym h $shrink_width
+    bindsym Down $grow_height
+    bindsym j $grow_height
+    bindsym Up $shrink_height
+    bindsym k $shrink_height
+    bindsym Escape mode "default"
+    bindsym Return mode "default"
+}
+
+bindsym $mod+Ctrl+Shift+Right $grow_width
+bindsym $mod+Ctrl+Shift+l $grow_width
+bindsym $mod+Ctrl+Shift+Left $shrink_width
+bindsym $mod+Ctrl+Shift+h $shrink_width
+bindsym $mod+Ctrl+Shift+Down $grow_height
+bindsym $mod+Ctrl+Shift+j $grow_height
+bindsym $mod+Ctrl+Shift+Up $shrink_height
+bindsym $mod+Ctrl+Shift+k $shrink_height
 
 bindsym $mod+1 workspace number 1
-bindsym $mod+2 workspace number 2
-bindsym $mod+3 workspace number 3
-bindsym $mod+4 workspace number 4
-bindsym $mod+5 workspace number 5
-bindsym $mod+6 workspace number 6
-bindsym $mod+7 workspace number 7
-bindsym $mod+8 workspace number 8
-bindsym $mod+9 workspace number 9
-bindsym $mod+0 workspace number 10
-
+bindsym $mod+Ctrl+1 move container to workspace number 1, workspace --no-auto-back-and-forth number 1
 bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+Ctrl+2 move container to workspace number 2, workspace --no-auto-back-and-forth number 2
 bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+Ctrl+3 move container to workspace number 3, workspace --no-auto-back-and-forth number 3
 bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+Ctrl+4 move container to workspace number 4, workspace --no-auto-back-and-forth number 4
 bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+Ctrl+5 move container to workspace number 5, workspace --no-auto-back-and-forth number 5
 bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+Ctrl+6 move container to workspace number 6, workspace --no-auto-back-and-forth number 6
 bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+Ctrl+7 move container to workspace number 7, workspace --no-auto-back-and-forth number 7
 bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+Ctrl+8 move container to workspace number 8, workspace --no-auto-back-and-forth number 8
 bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+Ctrl+9 move container to workspace number 9, workspace --no-auto-back-and-forth number 9
 bindsym $mod+Shift+9 move container to workspace number 9
+bindsym $mod+0 workspace number 10
+bindsym $mod+Ctrl+0 move container to workspace number 10, workspace --no-auto-back-and-forth number 10
 bindsym $mod+Shift+0 move container to workspace number 10
+bindsym $mod+Ctrl+Left exec ~/.config/sway/session move-relative prev
+bindsym $mod+Ctrl+Right exec ~/.config/sway/session move-relative next
+bindsym $mod+period workspace next
+bindsym $mod+comma workspace prev
+bindsym --whole-window $mod+button5 workspace next
+bindsym --whole-window $mod+button4 workspace prev
+bindsym $mod+slash workspace back_and_forth
 
-### Layout
-bindsym $mod+b splith
-bindsym $mod+v splitv
-bindsym $mod+f fullscreen toggle
-bindsym $mod+Shift+space floating toggle
-bindsym $mod+space focus mode_toggle
-bindsym $mod+Shift+s layout stacking
-bindsym $mod+Shift+t layout tabbed
-bindsym $mod+e layout toggle split
+# Mark the named scratchpad entries so their shortcuts stay independent.
+bindsym $mod+minus exec ~/.config/sway/session scratch-move special-default
+bindsym $mod+Shift+equal exec ~/.config/sway/session scratch-show special-default
+bindsym $mod+equal exec ~/.config/sway/session scratch-show special-alt
+bindsym $mod+Mod1+equal exec ~/.config/sway/session scratch-move special-alt
+bindsym $mod+F1 exec ~/.config/sway/session scratch-show special-f1
+bindsym $mod+Mod1+Shift+F1 exec ~/.config/sway/session scratch-move special-f1
+bindgesture swipe:3:left workspace next
+bindgesture swipe:3:right workspace prev
+bindgesture swipe:3:up exec ~/.config/sway/session scratch-show special-default
+bindgesture swipe:3:down exec ~/.config/sway/session scratch-show special-default
+bindgesture swipe:4:right $grow_width
+bindgesture swipe:4:left $shrink_width
+bindgesture swipe:4:down $grow_height
+bindgesture swipe:4:up $shrink_height
 
-### Scratchpad
-bindsym $mod+minus scratchpad show
-bindsym $mod+Shift+minus move scratchpad
-
-### Resize Mode
-mode "resize" {
-    bindsym h resize shrink width 10 px
-    bindsym j resize grow height 10 px
-    bindsym k resize shrink height 10 px
-    bindsym l resize grow width 10 px
-
-    bindsym Left resize shrink width 10 px
-    bindsym Down resize grow height 10 px
-    bindsym Up resize shrink height 10 px
-    bindsym Right resize grow width 10 px
-
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
-}
-bindsym $mod+r mode "resize"
-
-### Screenshots
-bindsym Print exec grim "$HOME/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png"
-bindsym $mod+Shift+4 exec grim -g "$(slurp)" - | wl-copy --type image/png
-
-### Audio
-bindsym XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
-bindsym XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
-bindsym XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
-
-### Brightness
-bindsym XF86MonBrightnessUp exec brightnessctl set 5%+
-bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
-
-### Autostart
-exec waybar
-exec mako
-
-### Session
-bindsym $mod+Shift+c reload
-bindsym $mod+Shift+e exec swaymsg exit
-
-# Disable default Sway bar; using Waybar
-bar {
-    mode invisible
-}
+set $float_apps ^(org\.pulseaudio\.pavucontrol|pavucontrol|blueman-manager|xdg-desktop-portal-(gtk|kde|hyprland|wlr).*|polkit-gnome-authentication-agent-1|hyprpolkitagent|org\.kde\.polkit-kde-authentication-agent-1|CachyOSHello|zenity)$
+for_window [app_id="$float_apps"] floating enable
+for_window [class="$float_apps"] floating enable
+for_window [title="^(Picture in picture|Save File|Open File|Steam - Self Updater)$"] floating enable
+for_window [title="^(Picture-in-Picture|imv|mpv|danmufloat|termfloat|nemo|ncmpcpp)$"] floating enable, resize set 960 px 540 px, move position center
+for_window [title="^danmufloat$"] sticky enable
+for_window [app_id="^(thunar|nemo)$"] opacity 0.92
+for_window [class="(?i)^(thunar|nemo)$"] opacity 0.92
+for_window [app_id="(?i)^(discord|armcord|webcord)$"] opacity 0.96
+for_window [class="(?i)^(discord|armcord|webcord)$"] opacity 0.96
+for_window [title="^(QQ|Telegram|NetEase Cloud Music Gtk4)$"] opacity 0.95

@@ -1,0 +1,68 @@
+#!/bin/sh
+set -eu
+
+case "$1" in
+    start)
+        export XDG_CURRENT_DESKTOP=sway XCURSOR_SIZE=24 QT_CURSOR_SIZE=24
+        dbus-update-activation-environment --systemd WAYLAND_DISPLAY SWAYSOCK DISPLAY XDG_CURRENT_DESKTOP XCURSOR_SIZE QT_CURSOR_SIZE
+        if command -v fcitx5 >/dev/null; then
+            fcitx5 -d
+        fi
+        for agent in /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 \
+                     /usr/libexec/polkit-gnome-authentication-agent-1 \
+                     /usr/lib/x86_64-linux-gnu/libexec/polkit-kde-authentication-agent-1 \
+                     /usr/bin/lxqt-policykit \
+                     /usr/libexec/xfce-polkit; do
+            if [ -x "$agent" ]; then
+                "$agent" &
+                break
+            fi
+        done
+        if command -v swaylock >/dev/null; then
+            exec swayidle -w timeout 300 'swaylock -f -c 000000' before-sleep 'swaylock -f -c 000000'
+        fi
+        ;;
+    lock)
+        if command -v swaylock >/dev/null; then
+            exec swaylock -f -c 000000
+        fi
+        exec swaynag -t warning -m 'Screen is unlocked. Install swaylock to enable locking.'
+        ;;
+    screenshot)
+        geometry=$(slurp) || exit 0
+        grim -g "$geometry" - | swappy -f -
+        ;;
+    scratch-move)
+        id=$(swaymsg -t get_tree | jq -r '
+            first(.. | objects | select(.focused and (.type == "con" or .type == "floating_con")) | .id) // empty
+        ')
+        [ -n "$id" ] || exit 0
+        # A window can belong to only one of the three scratchpads.
+        for group in special-default special-alt special-f1; do
+            swaymsg -q -- "[con_id=$id] unmark $group-$id"
+        done
+        swaymsg -- "[con_id=$id] mark --add $2-$id, move scratchpad"
+        ;;
+    scratch-show)
+        id=$(swaymsg -t get_tree | jq -r --arg group "$2" '
+            def members:
+                .. | objects | select(any(.marks[]?; startswith($group + "-")));
+            first(members | select(.visible == true) | .id) //
+            first(members | .id) // empty
+        ')
+        [ -n "$id" ] || exit 0
+        swaymsg -- "[con_id=$id] scratchpad show"
+        ;;
+    move-relative)
+        target=$(swaymsg -t get_workspaces | jq -r --arg direction "$2" '
+            sort_by(.num) as $workspaces |
+            ($workspaces | map(.focused) | index(true)) as $current |
+            if $current == null or length < 2 then empty
+            elif $direction == "prev" then $workspaces[$current - 1].name
+            else $workspaces[($current + 1) % length].name
+            end | @json
+        ')
+        [ -n "$target" ] || exit 0
+        swaymsg -- "move container to workspace $target, workspace --no-auto-back-and-forth $target"
+        ;;
+esac

@@ -1,0 +1,33 @@
+#!/bin/sh
+set -eu
+
+# Scope restarts to this Sway instance, even if Polybar runs in another session.
+runtime="${SWAYSOCK:?}.polybar"
+mkdir -p "$runtime"
+exec 9>"$runtime/launch.lock"
+flock 9
+
+config="$HOME/.config/polybar/config.ini"
+if [ -f "$runtime/pids" ]; then
+    while IFS= read -r pid; do
+        if [ "$(cat "/proc/$pid/comm" 2>/dev/null)" = polybar ] &&
+           tr '\0' '\n' < "/proc/$pid/environ" | grep -Fxq "SWAYSOCK=$SWAYSOCK"; then
+            kill "$pid" 2>/dev/null || :
+            for attempt in 1 2 3 4 5; do
+                kill -0 "$pid" 2>/dev/null || break
+                sleep 0.1
+            done
+        fi
+    done < "$runtime/pids"
+fi
+: > "$runtime/pids"
+
+for attempt in $(seq 1 30); do
+    monitors=$(polybar --list-monitors 2>/dev/null) && [ -n "$monitors" ] && break
+    sleep 0.2
+done
+[ -n "$monitors" ] || exit 1
+printf '%s\n' "$monitors" | cut -d: -f1 | while IFS= read -r monitor; do
+    MONITOR="$monitor" polybar --config="$config" main 9>&- >>"$runtime/polybar.log" 2>&1 &
+    printf '%s\n' "$!" >> "$runtime/pids"
+done

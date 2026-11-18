@@ -1,0 +1,33 @@
+#!/bin/sh
+set -eu
+
+case "$1" in
+    workspaces)
+        swaymsg -t get_workspaces | jq -jr '
+            sort_by(.num) as $workspaces |
+            range(1; 11) as $number |
+            ($workspaces | map(select(.num == $number)) | .[0]) as $ws |
+            (if $ws.focused then "%{B#ffb59d}%{F#5d1900}"
+             elif $ws.visible then "%{B#251e1c}%{F#ffb59d}"
+             elif $ws.urgent then "%{F#ffb4ab}"
+             elif $ws then "%{F#ede0dc}"
+             else "%{F#8e7e79}" end) +
+            "%{A1:swaymsg workspace --no-auto-back-and-forth number \($number):} \($number) %{A}%{F-}%{B-}"
+        '
+        printf '\n'
+        ;;
+    title)
+        swaymsg -t get_tree | jq -r '
+            first(.. | objects | select(.focused and (.type == "con" or .type == "floating_con")) | .name // "") // "" |
+            gsub("[[:cntrl:]]"; " ") | gsub("%"; "％")
+        '
+        ;;
+    battery)
+        for supply in /sys/class/power_supply/*; do
+            [ -r "$supply/type" ] && [ "$(cat "$supply/type")" = Battery ] || continue
+            [ -r "$supply/capacity" ] || continue
+            printf 'Bat %s%%\n' "$(cat "$supply/capacity")"
+            break
+        done
+        ;;
+esac
